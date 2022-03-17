@@ -1,0 +1,4 @@
+/repositories
+/temp_repositories
+.huey
+*.pyc

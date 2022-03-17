@@ -1,0 +1,53 @@
+version: '3.9'
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: ./docker/Dockerfile.api
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./app/repositories:/app/repositories
+    depends_on:
+      - mongodb
+    environment:
+      MONGODB_URL: ${MONGODB_URL}
+  cron:
+    build:
+      context: ./app
+      dockerfile: ./docker/Dockerfile.cron
+    volumes:
+      - ./app/repositories:/app/repositories
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      MONGODB_URL: ${MONGODB_URL}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+  redis:
+    image: "redis:alpine"
+  mongodb:
+    image: bitnami/mongodb:5.0.4
+    restart: unless-stopped
+    volumes:
+      - ./db-data:/bitnami/mongodb
+    expose:
+      - "27017"
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGODB_ADVERTISED_HOSTNAME: ${MONGODB_ADVERTISED_HOSTNAME}
+      MONGODB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongodb
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_URL: ${MONGODB_URL}

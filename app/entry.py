@@ -1,3 +1,4 @@
+import os
 from sanic import Sanic
 from sanic.response import json
 from collection import Collection
@@ -12,4 +13,4 @@ async def get_software(_, software_name):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", workers=4, debug=True)
+    app.run(host="0.0.0.0", workers=4, debug=os.environ.get("ENV") == "DEV")

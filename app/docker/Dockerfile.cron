@@ -8,6 +8,7 @@ WORKDIR /app
 COPY ./requirements/cron.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY . .
+COPY ./cron.py ./cron.py
+COPY ./collection ./collection
 
 CMD [ "huey_consumer.py", "cron.huey", "-v"]

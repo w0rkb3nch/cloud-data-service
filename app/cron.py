@@ -65,5 +65,5 @@ def fetch_providers():
 
     db_softwares = []
     for software_name, software_data in softwares.items():
-        db_softwares.append({"name": software_name, **software_data})
+        db_softwares.append({"name": software_name, "data": {**software_data}})
     collection.insert_softwares(db_softwares)

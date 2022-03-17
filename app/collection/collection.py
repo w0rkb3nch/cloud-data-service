@@ -2,6 +2,7 @@ import os
 import pymongo
 from pymongo.errors import BulkWriteError
 
+
 class Collection:
     def __init__(self):
         mongo_client = pymongo.MongoClient(os.environ.get("MONGODB_URL"))
@@ -15,7 +16,9 @@ class Collection:
         except BulkWriteError:
             for software in softwares:
                 self._mongo_collection.replace_one(
-                    {'name' : software['name']}, {**software}, upsert=True
+                    {"name": software["name"]},
+                    {"name": software["name"], "data": {**software["data"]}},
+                    upsert=True,
                 )
 
     def get_sofware_by_name(self, software_name):
